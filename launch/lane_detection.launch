@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <arg name="ros_bag_file"	                default="/media/ps/data/HF3D_Obj_Det/raw_data/hf_indoors_cameras3_lidars2_frame_id_rs16_rs32.bag"/>
+    <node pkg="rosbag" type="play" name="player" output="log" args="-l $(arg ros_bag_file)" />
+
+    <!-- Camera topic and weights, config and classes files -->
+    <arg name="rs16_topic"	                default="/ns1/rslidar_points"/>
+    <arg name="rs32_topic"	            default="/ns2/rslidar_points"/>
+
+    <!-- Published topics -->
+    <arg name="lane_det_topic"      default="/ns3/detected_lanes"/>
+
+    <!-- Node -->
+    <node name="lane_detector_manager" pkg="lane_detection_lidar" type="lane_detection_V3.py" output="screen" respawn="true">
+        <param name="rs16_topic"               value="$(arg rs16_topic)"/>
+        <param name="rs32_topic"              value="$(arg rs32_topic)"/>
+        <param name="lane_det_topic"               value="$(arg lane_det_topic)"/>
+    </node>
+    <node type="rviz" name="rviz" pkg="rviz"/>
+</launch>
